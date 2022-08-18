@@ -1,20 +1,54 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
+import { Text, View, Image } from 'react-native';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import Button from './app/components/Button';
+import Content from './app/components/Content';
+
+class App extends Component {
+
+  cancelClicked() {
+    alert('Cancel clicked');
+  }
+
+  okayClicked() {
+    alert('Okay clicked');
+  }
+
+  render() {
+    const img = "https://picsum.photos/id/1025/4951/3301"
+
+    return (
+      <View style={{ marginTop: 100, padding: 20 }}>
+
+        <Content>
+          <Image 
+          source={{uri: img}}
+          style={{ width: 200, height: 200, resizeMode: 'contain'}}
+          />
+          <Text
+          style={{ color: '#000', textAlign: 'left', lineHeight: 20 }}
+          >
+            This is bio number 1
+          </Text>
+        </Content>
+
+        <Content>
+          <Text
+          style={{ color: "#000", textAlign: 'left', lineHeight: 20 }}
+          >
+            This is biography number 2
+          </Text>
+        </Content>
+
+        <View
+        style={{ marginTop: 20, padding: 20, flex: 1, flexDirection: 'row', justifyContent: 'center'}}
+        >  
+          <Button text="Okay" action = { this.okayClicked }></Button>
+          <Button text="Cancel" action = { this.cancelClicked }></Button>
+        </View>
+      </View>
+    );
+  }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
