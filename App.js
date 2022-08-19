@@ -1,50 +1,60 @@
 import React, { Component } from 'react';
-import { Text, View, Image } from 'react-native';
+import { Text, View, Image, TouchableOpacity } from 'react-native';
 
 import Button from './app/components/Button';
+import api from './app/lib/API.js';
 import Content from './app/components/Content';
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      counter: 0
+    }
+    this.okayClicked = this.okayClicked.bind(this) // Binds okayClicked to the App class
+  }
 
   cancelClicked() {
     alert('Cancel clicked');
   }
 
   okayClicked() {
-    alert('Okay clicked');
+    var c = this.state.counter + 1;
+    this.setState({
+      counter: c
+    })
+  }
+
+  apiClicked() {
+    api.fetchData()
   }
 
   render() {
     const img = "https://picsum.photos/id/1025/4951/3301"
-
+    
     return (
-      <View style={{ marginTop: 100, padding: 20 }}>
-
-        <Content>
-          <Image 
-          source={{uri: img}}
-          style={{ width: 200, height: 200, resizeMode: 'contain'}}
-          />
-          <Text
-          style={{ color: '#000', textAlign: 'left', lineHeight: 20 }}
-          >
-            This is bio number 1
-          </Text>
-        </Content>
-
-        <Content>
-          <Text
-          style={{ color: "#000", textAlign: 'left', lineHeight: 20 }}
-          >
-            This is biography number 2
-          </Text>
-        </Content>
+      <View style={{ marginTop: 80, padding: 20 }}>
+        <Text># Clicks: {this.state.counter.toString()}</Text>
 
         <View
-        style={{ marginTop: 20, padding: 20, flex: 1, flexDirection: 'row', justifyContent: 'center'}}
-        >  
-          <Button text="Okay" action = { this.okayClicked }></Button>
-          <Button text="Cancel" action = { this.cancelClicked }></Button>
+        style={{ marginTop: 20, padding: 20, flex: 1, flexDirection: 'row', justifyContent: 'center' }}
+        >
+          <Button text="Okay" action={ this.okayClicked }/>
+          <Button text="Cancel" action={ this.cancelClicked }/>
+          <TouchableOpacity
+          onPress = { () => this.apiClicked()}
+            style={{
+                width: 120,
+                height: 40,
+                padding: 10,
+                backgroundColor: '#CCC'
+            }}>
+            <Text style={{ textAlign: 'center', color: '#000'}}>API Call button</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ marginTop: 200, padding: 20 }}>
+        <Image source={{uri: img}} style={{height:300, width: 300}}/>
         </View>
       </View>
     );
