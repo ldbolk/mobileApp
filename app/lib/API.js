@@ -1,4 +1,4 @@
-const timeout = 50000;
+const timeout = 7000;
 
 class API {
     static fetchData = () => new Promise( (resolve, reject) => {
@@ -14,6 +14,7 @@ class API {
         fetch(url)
         .then( res => res.json() )
         .then(data => { 
+            console.log(data)
             clearTimeout(killFetch);
             resolve({ success: true, data: data })
          })

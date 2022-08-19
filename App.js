@@ -1,64 +1,86 @@
 import React, { Component } from 'react';
 import { Text, View, Image, TouchableOpacity } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
+
+import Homepage from './app/views/Homepage';
+import Detail from './app/views/Detail';
 
 import Button from './app/components/Button';
-import api from './app/lib/API.js';
+import API from './app/lib/API.js';
 import Content from './app/components/Content';
 
-class App extends Component {
+export default class App extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      counter: 0
+      isLoaded: false,
+      timeout: false,
+      data: []
     }
-    this.okayClicked = this.okayClicked.bind(this) // Binds okayClicked to the App class
   }
 
-  cancelClicked() {
-    alert('Cancel clicked');
+  componentDidMount() {
+    this.fetchData();
   }
-
-  okayClicked() {
-    var c = this.state.counter + 1;
-    this.setState({
-      counter: c
+  
+  fetchData() {
+    API.fetchData()
+    .then(res => {
+      this.setState({
+        isLoaded: true,
+        data: res
+      })
+    })
+    .catch(err => {
+      this.setState({
+        timeout: true
+      })
     })
   }
 
-  apiClicked() {
-    api.fetchData()
+
+  renderContent() {
+    if(this.state.isLoaded) {
+      return(
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Homepage" component={ Homepage }/>
+            <Stack.Screen name="Detail" component={ Detail }/>
+          </Stack.Navigator>
+        </NavigationContainer>
+      )
+    } if (this.state.timeout) {
+      return(
+        <Text style={{ fontSize: 22 }}>
+          Timeout my dude
+        </Text>
+      )
+    }
+
+    return(
+      <Text 
+      style={{ fontSize: 22 }}>
+        Spinner!
+      </Text>  
+    )
   }
 
   render() {
     const img = "https://picsum.photos/id/1025/4951/3301"
     
     return (
-      <View style={{ marginTop: 80, padding: 20 }}>
-        <Text># Clicks: {this.state.counter.toString()}</Text>
-
-        <View
-        style={{ marginTop: 20, padding: 20, flex: 1, flexDirection: 'row', justifyContent: 'center' }}
-        >
-          <Button text="Okay" action={ this.okayClicked }/>
-          <Button text="Cancel" action={ this.cancelClicked }/>
-          <TouchableOpacity
-          onPress = { () => this.apiClicked()}
-            style={{
-                width: 120,
-                height: 40,
-                padding: 10,
-                backgroundColor: '#CCC'
-            }}>
-            <Text style={{ textAlign: 'center', color: '#000'}}>API Call button</Text>
-          </TouchableOpacity>
-        </View>
+      <View>
+      <View style={{ marginTop: 100, padding: 20 }}>
+        { this.renderContent() }
         <View style={{ marginTop: 200, padding: 20 }}>
         <Image source={{uri: img}} style={{height:300, width: 300}}/>
         </View>
       </View>
+    </View>
     );
   }
 }
-
-export default App;
